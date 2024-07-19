@@ -2,14 +2,16 @@ import { X } from "lucide-react";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { courseType } from "../../interfaces/courseType";
+import { CourseData } from "../../interfaces/course-data";
 
 interface closeEditCourseModalProps {
     closeEditCourseModal: () => void
-    course: courseType | undefined
+    editCourse: (data: CourseData) => void
+    deleteCourse: (id: string) => void
+    course: CourseData
 }
 
-export function EditCourseModal({ closeEditCourseModal, course }: closeEditCourseModalProps ){
+export function EditCourseModal({ closeEditCourseModal, editCourse, deleteCourse, course }: closeEditCourseModalProps ){
     const [name, setName] = useState(course?.name)    
     const [category, setCategory] = useState(course?.category)
     const [teacher, setTeacher] = useState(course?.teacher)
@@ -32,8 +34,15 @@ export function EditCourseModal({ closeEditCourseModal, course }: closeEditCours
     function handleEditCourse(event: FormEvent<HTMLFormElement>) {
         event?.preventDefault()
         
-    }
+        const data = {
+            id: course?.id,
+            name,
+            category,
+            teacher
+        }
 
+        editCourse(data)
+    }
 
     return(
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
@@ -52,7 +61,7 @@ export function EditCourseModal({ closeEditCourseModal, course }: closeEditCours
                         <Button type="submit" size="secondary">
                             Editar
                         </Button>
-                        <Button type="button" variant="secondary" size="secondary">
+                        <Button onClick={() => deleteCourse(course.id)} type="button" variant="secondary" size="secondary">
                             Excluir
                         </Button>
                     </div>

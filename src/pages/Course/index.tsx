@@ -1,29 +1,31 @@
-import { useState } from "react"
-import { Button } from "../../components/Button"
-import { CreateCourseModal } from "./CreateCourseModal"
+import { useState } from "react";
+import { Button } from "../../components/Button";
+import { CreateCourseModal } from "./CreateCourseModal";
 import { CourseDetails } from "./CourseDetails";
 import { EditCourseModal } from "./EditCourseModal";
-import { courseType } from "../../interfaces/courseType";
+import { CourseData, CreateCourseData } from "../../interfaces/course-data";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useCourseData } from "../../hooks/useCourseData";
+import { useCreateCourse, useDeleteCourse, useEditCourse } from "../../hooks/useMutationCourse";
 
 const queryClient = new QueryClient();
 
 export function Course() {
     const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
     const [isEditCourseModalOpen, setIsEditCourseModalOpen] = useState(false);
-    const [courseToEdit, setCourseToEdit] = useState<courseType>()
-
-    const [courses, setCourses] = useState<courseType[]>([
-        {
-            id: "joaozin",
-            name: "ai calica",
-            category: "front-end",
-            teacher: "wellingtinho"
-        }
-    ])
+    const [courseToEdit, setCourseToEdit] = useState<CourseData>({
+        id: "",
+        name: "",
+        category: "",
+        teacher: ""
+    })
+    const mutateEditCourse = useEditCourse()
+    const mutateCreateCourse = useCreateCourse()
+    const mutateDeleteCourse = useDeleteCourse()
+    const { data } = useCourseData()
 
     function openEditCourseModal(id: string){
-        const courseToEdit = courses?.find(course => course.id === id);
+        const courseToEdit = data?.find(course => course.id === id);
         if (courseToEdit) {
             setCourseToEdit(courseToEdit);
             setIsEditCourseModalOpen(true);
@@ -42,6 +44,21 @@ export function Course() {
         setIsCreateCourseModalOpen(false)
     }
 
+    function createCourse(data: CreateCourseData){
+        mutateCreateCourse.mutate(data)
+        setIsCreateCourseModalOpen(false)
+    }
+
+    function editCourse(data: CourseData){
+        mutateEditCourse.mutate(data)
+        setIsEditCourseModalOpen(false)
+    }
+
+    function deleteCourse(courseId: string){
+        mutateDeleteCourse.mutate(courseId)
+        setIsEditCourseModalOpen(false)
+    }
+
     return (
         <QueryClientProvider client={queryClient}>
             <div className="flex items-center mt-36 flex-col space-y-10">
@@ -55,7 +72,7 @@ export function Course() {
                         </tr>
                     </thead>
                     <tbody>
-                        {courses?.map((curso, index) => {
+                        {data?.map((curso, index) => {
                             return(
                                 <CourseDetails key={curso.id} openEditCourseModal={openEditCourseModal} curso={curso} index={index} />
                             )
@@ -67,11 +84,11 @@ export function Course() {
                 </Button>
 
                 {isCreateCourseModalOpen && (
-                    <CreateCourseModal closeCreateCourseModal={closeCreateCourseModal} />
+                    <CreateCourseModal createCourse={createCourse} closeCreateCourseModal={closeCreateCourseModal} />
                 )}
 
                 {isEditCourseModalOpen && (
-                    <EditCourseModal course={courseToEdit} closeEditCourseModal={closeEditCourseModal} />
+                    <EditCourseModal course={courseToEdit} editCourse={editCourse} deleteCourse={deleteCourse} closeEditCourseModal={closeEditCourseModal} />
                 )}
             </div>
         </QueryClientProvider>

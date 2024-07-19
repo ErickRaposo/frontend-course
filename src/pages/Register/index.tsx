@@ -1,12 +1,15 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
-import { api } from "../../services/api";
+import { Context } from "../../context/AuthContext";
+import { Navigate } from "react-router-dom";
 
 export function Register() {
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const context = useContext(Context)
+
 
     function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
         event.target.setCustomValidity('')
@@ -26,17 +29,11 @@ export function Register() {
     async function handleRegister(event: FormEvent<HTMLFormElement>) {
         event?.preventDefault()
 
-        const data = {
-            name,
-            email,
-            password
-        }
-        const response = await api.post("/auth/register", data)
-        console.log(response.data)
+        context?.handleRegister(name, email, password)
     }
 
-    return (
-        <>
+    if (!context?.authenticated){
+        return (
             <div className="flex h-screen items-center justify-center flex-col space-y-10">
                 <h1 className="font-bold text-4xl text-sky-600 text">Registrar</h1>
                 <form onSubmit={handleRegister} className="flex flex-col items-center w-96 space-y-8">
@@ -50,6 +47,8 @@ export function Register() {
                     </Button>
                 </form>
             </div>
-        </>
-    )
+        )
+    } else {
+        return <Navigate to="/" />
+    }
 }

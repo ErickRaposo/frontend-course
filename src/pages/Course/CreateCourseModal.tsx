@@ -2,12 +2,14 @@ import { X } from "lucide-react";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { CreateCourseData } from "../../interfaces/course-data";
 
 interface closeCreateCourseModalProps {
     closeCreateCourseModal: () => void
+    createCourse: (data: CreateCourseData) => void
 }
 
-export function CreateCourseModal({ closeCreateCourseModal }: closeCreateCourseModalProps ){
+export function CreateCourseModal({ closeCreateCourseModal, createCourse }: closeCreateCourseModalProps ){
     const [name, setName] = useState("")    
     const [category, setCategory] = useState("")
     const [teacher, setTeacher] = useState("")
@@ -30,6 +32,13 @@ export function CreateCourseModal({ closeCreateCourseModal }: closeCreateCourseM
     function handleCreateCourse(event: FormEvent<HTMLFormElement>) {
         event?.preventDefault()
         
+        const data = {
+            name,
+            category,
+            teacher
+        }
+
+        createCourse(data)
     }
     
     return(
