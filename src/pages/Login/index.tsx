@@ -2,9 +2,10 @@ import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
 import { Context } from "../../context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export function Login(){
+    const navigate = useNavigate()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const context = useContext(Context)
@@ -38,6 +39,7 @@ export function Login(){
                         Entrar
                     </Button>
                 </form>
+                <button onClick={() => navigate('/register')} type="button" className="text-sm underline text-sky-400">Cadastrar</button>
             </div>
         )
     } else {

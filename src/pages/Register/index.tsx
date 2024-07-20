@@ -2,9 +2,10 @@ import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
 import { Context } from "../../context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export function Register() {
+    const navigate = useNavigate()
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -46,6 +47,7 @@ export function Register() {
                         Cadastrar
                     </Button>
                 </form>
+                <button onClick={() => navigate('/login')} type="button" className="text-sm underline text-sky-400">Entrar</button>
             </div>
         )
     } else {
