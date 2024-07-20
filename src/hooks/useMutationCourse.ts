@@ -15,7 +15,6 @@ interface PutData {
 }
 
 const postData = async ({ name, category, teacher }: PostData) => {
-    console.log("ajuda ai")
     return await api.post('/course', {
         name,
         category,

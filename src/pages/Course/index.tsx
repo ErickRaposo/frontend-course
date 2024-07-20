@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "../../components/Button";
 import { CreateCourseModal } from "./CreateCourseModal";
 import { CourseDetails } from "./CourseDetails";
@@ -7,10 +7,13 @@ import { CourseData, CreateCourseData } from "../../interfaces/course-data";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useCourseData } from "../../hooks/useCourseData";
 import { useCreateCourse, useDeleteCourse, useEditCourse } from "../../hooks/useMutationCourse";
+import { LogOut } from "lucide-react";
+import { Context } from "../../context/AuthContext";
 
 const queryClient = new QueryClient();
 
 export function Course() {
+    const context = useContext(Context)
     const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
     const [isEditCourseModalOpen, setIsEditCourseModalOpen] = useState(false);
     const [courseToEdit, setCourseToEdit] = useState<CourseData>({
@@ -90,7 +93,12 @@ export function Course() {
                 {isEditCourseModalOpen && (
                     <EditCourseModal course={courseToEdit} editCourse={editCourse} deleteCourse={deleteCourse} closeEditCourseModal={closeEditCourseModal} />
                 )}
+
             </div>
+
+            <button onClick={() => context?.handleLogout()} type="button" className="absolute top-12 right-12 p-3 transition-all bg-zinc-600 hover:bg-zinc-700 rounded-3xl">
+                <LogOut className="size-4" />
+            </button>
         </QueryClientProvider>
     )
 }
